@@ -1,5 +1,6 @@
 
 class MarvelService {
+    _noImg = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
     _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     _apiKey = 'apikey=45a49b85caa5a36995624d94e2941718'
     getResource = async (url) => {
@@ -9,6 +10,9 @@ class MarvelService {
             throw new Error(`Could not fetch ${url}, status: ${res.status}`)
         }
         return await res.json();
+    }
+    getNoImg = () => {
+        return this._noImg
     }
 
     getAllCharacters = async () => {
@@ -22,6 +26,7 @@ class MarvelService {
 
     _transformCharacter = (char) => {
         return {
+            id: char.id,
             name: char.name,
             description: char.description ? `${char.description.slice(0, 210)}...` : 'There is no description for this character',
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
