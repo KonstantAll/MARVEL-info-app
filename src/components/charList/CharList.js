@@ -5,6 +5,7 @@ import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
 class CharList extends Component{
+
     state = {
         charList: [],
         loading: true,
@@ -43,6 +44,7 @@ class CharList extends Component{
                 <Character
                     key = {elem.id}
                     char = {elem}
+                    onCharSelected={this.props.onCharSelected}
                 />
             )
         })
@@ -68,12 +70,14 @@ class CharList extends Component{
 }
 
 const Character = (props) => {                      // here I can write {char}
-    const {name, thumbnail} = props.char            // so here I will write just char
+    const {name, thumbnail, id} = props.char            // so here I will write just char
     return (
-        <li className="char__item">
+        <li className="char__item"
+            onClick={() => props.onCharSelected(id)}
+            key={id}>
             <img src={thumbnail} alt="abyss"
                  style={{
-                     objectFit : thumbnail==='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ? "contain" : ''
+                     objectFit : thumbnail==='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ? "unset" : ''
                  }}
             />
             <div className="char__name">{name}</div>

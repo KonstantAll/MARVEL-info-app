@@ -21,20 +21,14 @@ class RandomChar extends Component{
         // clearInterval(this.timerId)
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log('update')
     }
 
     onCharLoaded = (char) => {
         this.setState({char, loading: false, error: false})
     }
 
-    updateChar= () => {
-        const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-        // const id = 12;
-        this.marvelService
-            .getCharacter(id)
-            .then(this.onCharLoaded)
-            .catch(this.onError);
+    onCharLoading = () => {
+        this.setState({loading: true})
     }
 
     onError = () => {
@@ -44,13 +38,22 @@ class RandomChar extends Component{
         })
     }
 
+    updateChar= () => {
+        const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
+        // const id = 12;
+        this.onCharLoading();
+        this.marvelService
+            .getCharacter(id)
+            .then(this.onCharLoaded)
+            .catch(this.onError);
+    }
+
     render() {
         const {char, loading} = this.state;
         const {error} = this.state;
 
         const errorMessage = error ? <ErrorMessage/>:  null;
         const spinner = loading ? <Spinner/>:  null;
-
         const content = !(loading || error) ? <View char ={char}/> : null
 
             return (
@@ -80,7 +83,6 @@ class RandomChar extends Component{
 
 const View = ({char}) => {
     const {name, description, thumbnail, homepage, wiki} = char;
-    console.log(thumbnail)
     return(
         <div className="randomchar__block">
             <img src={thumbnail} alt="Random character" className="randomchar__img" style={{
