@@ -10,19 +10,44 @@ class CharList extends Component{
         charList: [],
         loading: true,
         error: false,
+        newItemLoading: false,
+        offset: 210,
+        charEnded: false,
     }
 
     marvelService = new MarvelService();
 
-    componentDidMount() {
-        this.updateList()
+    scrollCallback(offset) {
+        let bottomReached = false;
+        if (!bottomReached && (window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            bottomReached = true;
+            console.log('Вы достигли низа страницы!');
+            // console.log('Вы достигли низа страницы!', this.state);
+            // this.onRequest(offset);
+        } else {
+            bottomReached = false
+        }
     }
 
-    updateList = () => {
+    componentDidMount() {
+        this.onRequest();
+        window.addEventListener('scroll', this.scrollCallback)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.scrollCallback)
+    }
+
+    onRequest = (offset) => {
+        this.onCharListLoading();
         this.marvelService
-            .getAllCharacters()
+            .getAllCharacters(offset)
             .then(this.onCharListLoaded)
             .catch(this.onError);
+    }
+
+    onCharListLoading = () => {
+        this.setState({newItemLoading: true})
     }
 
     onError = () => {
@@ -32,13 +57,19 @@ class CharList extends Component{
         })
     }
 
-    onCharListLoaded = (charList) => {
-        this.setState({charList, loading:false})
-    }
+    onCharListLoaded = (newCharList) => {
 
+        this.setState(({charList, offset}) => ({
+            charList: [...charList, ...newCharList],
+            loading:false,
+            newItemLoading: false,
+            offset: offset + 9,
+            charEnded: newCharList.length < 9,
+        }))
+    }
     render() {
 
-        const {charList, loading, error} = this.state;
+        const {charList, loading, error, newItemLoading, offset, charEnded} = this.state;
         const elements = charList.map(elem => {
             return (
                 <Character
@@ -61,7 +92,12 @@ class CharList extends Component{
                 {errorMessage}
                 {spinner}
                 {content}
-                <button className="button button__main button__long">
+                <button
+                    className="button button__main button__long"
+                    disabled={newItemLoading}
+                    style ={{display: charEnded ? "none" : "block"}}
+                    onClick={() => this.onRequest(offset)}
+                >
                     <div className="inner">load more</div>
                 </button>
             </div>
@@ -69,8 +105,8 @@ class CharList extends Component{
     }
 }
 
-const Character = (props) => {                      // here I can write {char}
-    const {name, thumbnail, id} = props.char            // so here I will write just char
+const Character = (props) => {
+    const {name, thumbnail, id} = props.char
     return (
         <li className="char__item"
             onClick={() => props.onCharSelected(id)}
