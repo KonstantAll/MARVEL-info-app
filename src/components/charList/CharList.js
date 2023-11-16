@@ -29,11 +29,7 @@ class CharList extends Component{
     //             bottomReached = false
     //         }
     // }
-    itemRefs = [];
 
-    setRef = (ref) => {
-        this.itemRefs.push(ref);
-    }
     componentDidMount() {
         this.onRequest();
         // window.addEventListener('scroll', this.scrollCallback)
@@ -72,15 +68,32 @@ class CharList extends Component{
             charEnded: newCharList.length < 9,
         }))
     }
+
+    itemRefs = [];
+
+    setRef = (ref) => {
+        this.itemRefs.push(ref);
+    }
+
+    focusOnItem = (id) => {
+        console.log('hello suka', id)
+        // По возможности, не злоупотребляйте рефами, только в крайних случаях
+        this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+        this.itemRefs[id].classList.add('char__item_selected');
+        this.itemRefs[id].focus();
+    }
     render() {
 
         const {charList, loading, error, newItemLoading, offset, charEnded} = this.state;
-        const elements = charList.map(elem => {
+        const elements = charList.map((elem, index) => {
             return (
                 <Character
+                    setRef = {this.setRef}
                     key = {elem.id}
                     char = {elem}
                     onCharSelected={this.props.onCharSelected}
+                    focusOnItem ={this.focusOnItem}
+                    index={index}
                 />
             )
         })
@@ -114,7 +127,17 @@ const Character = (props) => {
     const {name, thumbnail, id} = props.char
     return (
         <li className="char__item"
-            onClick={() => props.onCharSelected(id)}
+            ref ={props.setRef}
+            onClick={() => {
+                props.onCharSelected(id);
+                props.focusOnItem(props.index);
+            }}
+            onKeyPress={(e) => {
+                if (e.key === ' ' || e.key === "Enter") {
+                    this.props.onCharSelected(id);
+                    this.focusOnItem(props.index);
+                }
+            }}
             key={id}>
             <img src={thumbnail} alt="abyss"
                  style={{
