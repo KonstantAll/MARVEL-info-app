@@ -5,6 +5,7 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
 import Skeleton from "../skeleton/Skeleton";
 
+
 class CharInfo extends Component{
     state = {
         char: null,

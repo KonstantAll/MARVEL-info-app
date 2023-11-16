@@ -3,6 +3,7 @@ import {Component} from "react";
 import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
+import PropTypes from "prop-types";
 
 class CharList extends Component{
 
@@ -17,25 +18,29 @@ class CharList extends Component{
 
     marvelService = new MarvelService();
 
-    scrollCallback(offset) {
-        let bottomReached = false;
-        if (!bottomReached && (window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-            bottomReached = true;
-            console.log('Вы достигли низа страницы!');
-            // console.log('Вы достигли низа страницы!', this.state);
-            // this.onRequest(offset);
-        } else {
-            bottomReached = false
-        }
-    }
+    // scrollCallback(offset) {
+    //         let bottomReached = false;
+    //         if (!bottomReached && (window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+    //             bottomReached = true;
+    //             // console.log('Вы достигли низа страницы!');
+    //             // console.log('Вы достигли низа страницы!', this.state);
+    //             // this.onRequest(offset);
+    //         } else {
+    //             bottomReached = false
+    //         }
+    // }
+    itemRefs = [];
 
+    setRef = (ref) => {
+        this.itemRefs.push(ref);
+    }
     componentDidMount() {
         this.onRequest();
-        window.addEventListener('scroll', this.scrollCallback)
+        // window.addEventListener('scroll', this.scrollCallback)
     }
 
     componentWillUnmount() {
-        window.removeEventListener('scroll', this.scrollCallback)
+        // window.removeEventListener('scroll', this.scrollCallback)
     }
 
     onRequest = (offset) => {
@@ -119,6 +124,9 @@ const Character = (props) => {
             <div className="char__name">{name}</div>
         </li>
     )
+}
+CharList.propTypes = {
+    onCharSelected: PropTypes.func.isRequired,
 }
 
 export default CharList;
