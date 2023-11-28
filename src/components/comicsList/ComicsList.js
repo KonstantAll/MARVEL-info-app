@@ -1,10 +1,17 @@
 import './comicsList.scss';
 import uw from '../../resources/img/UW.png';
 import xMen from '../../resources/img/x-men.png';
+import {useState} from "react";
+import useMarvelService from "../../services/MarvelService";
 
-const ComicsList = () => {
+const ComicsList = (props) => {
+
+    const [comicsList, setComicsList] = useState([]);
+    const {error, getAllComics} = useMarvelService();
+
     return (
         <div className="comics__list">
+            <button onClick={getAllComics}>click</button>
             <ul className="comics__grid">
                 <li className="comics__item">
                     <a href="#">
