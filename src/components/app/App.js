@@ -1,36 +1,26 @@
 import AppHeader from "../appHeader/AppHeader";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 
-import {useState} from "react";
-
-import ComicsList from "../comicsList/ComicsList";
-
+import {MainPage, ComicsPage} from "../pages";
 const App = () => {
-
-    const [selectedChar, setChar] = useState(null)
-
-    const onCharSelected = (id) => {
-        setChar(id)
-    }
-    //
     return (
-        <div className="app">
-            <AppHeader/>
-            <main>
-                <ComicsList/>
-                {/*<ErrorBoundary>*/}
-                {/*    <RandomChar/>*/}
-                {/*</ErrorBoundary>*/}
-                {/*<div className="char__content">*/}
-                {/*    <ErrorBoundary>*/}
-                {/*        <CharList onCharSelected ={onCharSelected}/>*/}
-                {/*    </ErrorBoundary>*/}
-                {/*    <ErrorBoundary>*/}
-                {/*        <CharInfo charId = {selectedChar}/>*/}
-                {/*    </ErrorBoundary>*/}
-                {/*</div>*/}
-                {/*<img className="bg-decoration" src={decoration} alt="vision"/>*/}
-            </main>
-        </div>
+        <Router>
+            <div className="app">
+                <AppHeader/>
+                <main>
+                    <Routes>
+                        <Route path={'/'}
+                               element={<MainPage/>}
+                        >
+                        </Route>
+                        <Route path={'/comics'}
+                               element={<ComicsPage/>}
+                        >
+                        </Route>
+                    </Routes>
+                </main>
+            </div>
+        </Router>
     )
 
 }
