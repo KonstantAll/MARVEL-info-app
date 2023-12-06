@@ -2,8 +2,8 @@ import './charInfo.scss';
 import {useEffect, useState} from "react";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
-import Skeleton from "../skeleton/Skeleton";
 import useMarvelService from "../../services/MarvelService";
+import Skeleton from "../skeleton/Skeleton";
 
 
 const CharInfo = (props) => {
@@ -31,7 +31,7 @@ const CharInfo = (props) => {
     const skeleton = char || loading || error ? null : <Skeleton/>;
     const errorMessage = error ? <ErrorMessage/>:  null;
     const spinner = loading ? <Spinner/>:  null;
-    const content = !(loading || error || !char) ? <View char ={char}/> : null
+    const content = !(loading || error || !char) ? <View char ={char}/> : null;
 
     return (
         <div className="char__info">
