@@ -4,4 +4,4 @@ import Page404 from "./404";
 import SingleComicPage from "./SingleComicPage";
 
 
-export {MainPage,ComicsPage, Page404, SingleComicPage};
+export {MainPage,ComicsPage, SingleComicPage, Page404};
