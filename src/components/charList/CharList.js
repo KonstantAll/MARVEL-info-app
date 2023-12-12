@@ -1,5 +1,6 @@
 import './charList.scss';
 import {useState, useEffect, useRef} from "react";
+import {TransitionGroup, CSSTransition} from "react-transition-group";
 import useMarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
@@ -63,7 +64,9 @@ const CharList = (props) => {
     const spinner = loading && !newItemLoading ? <Spinner/> : null;
     const content =
         (<ul className="char__grid">
-            {elements}
+            <TransitionGroup component={null}>
+                {elements}
+            </TransitionGroup>
         </ul>);
 
     return (
@@ -86,26 +89,28 @@ const CharList = (props) => {
 const Character = (props) => {
     const {name, thumbnail, id} = props.char
     return (
-        <li className="char__item"
-            ref ={el => props.itemRefs.current[props.index] = el}
-            onClick={() => {
-                props.onCharSelected(id);
-                props.focusOnItem(props.index);
-            }}
-            // onKeyPress={(e) => {
-            //     if (e.key === ' ' || e.key === "Enter") {
-            //         props.onCharSelected(id);
-            //         props.focusOnItem(props.index);
-            //     }
-            // }}
-            key={id}>
-            <img src={thumbnail} alt="abyss"
-                 style={{
-                     objectFit : thumbnail==='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ? "unset" : ''
-                 }}
-            />
-            <div className="char__name">{name}</div>
-        </li>
+        <CSSTransition key={id} timeout={500} className="char__item">
+            <li
+                ref ={el => props.itemRefs.current[props.index] = el}
+                onClick={() => {
+                    props.onCharSelected(id);
+                    props.focusOnItem(props.index);
+                }}
+                // onKeyPress={(e) => {
+                //     if (e.key === ' ' || e.key === "Enter") {
+                //         props.onCharSelected(id);
+                //         props.focusOnItem(props.index);
+                //     }
+                // }}
+                key={id}>
+                <img src={thumbnail} alt="abyss"
+                     style={{
+                         objectFit : thumbnail==='http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ? "unset" : ''
+                     }}
+                />
+                <div className="char__name">{name}</div>
+            </li>
+        </CSSTransition>
     )
 }
 CharList.propTypes = {

@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/app/App';
 import './style/style.scss';
+import HocApp from "./components/lessonsApp/hocApp";
 
 
 ReactDOM
@@ -11,6 +12,7 @@ ReactDOM
     .render(
         // <React.StrictMode>
             <App />
+        // <HocApp/>
         // </React.StrictMode>
     );
 
