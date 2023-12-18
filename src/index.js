@@ -12,7 +12,6 @@ ReactDOM
     .render(
         // <React.StrictMode>
             <App />
-        // <HocApp/>
         // </React.StrictMode>
     );
 
