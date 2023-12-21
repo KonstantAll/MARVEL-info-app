@@ -3,11 +3,18 @@ import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 
 import {lazy, Suspense} from "react";
 import Spinner from "../spinner/Spinner";
+// import SingleChar from "../singleChar/SingleChar";
+// import SinglePage from "../pages/SinglePage";
+// import SingleComic from "../singleComic/SingleComic";
 
 const Page404 = lazy(() => import("../pages/404"));
 const MainPage = lazy(() => import("../pages/MainPage"));
-const SingleComicPage = lazy(() => import("../pages/SingleComicPage"));
 const ComicsPage = lazy(() => import("../pages/ComicsPage"));
+const SingleChar = lazy(() => import("../singleChar/SingleChar"));
+const SinglePage = lazy(() => import("../pages/SinglePage"));
+const SingleComic = lazy(() => import("../singleComic/SingleComic"));
+
+
 const App = () => {
     return (
         <Router>
@@ -22,8 +29,11 @@ const App = () => {
                             <Route path={'/comics'}
                                    element={<ComicsPage/>}
                             />
-                            <Route path={'/comics/:comicId'}
-                                   element={<SingleComicPage/>}
+                            <Route path={'/comics/:id'}
+                                   element={<SinglePage MyComponent = {SingleComic} dataType='comic'/>}
+                            />
+                            <Route path={'/characters/:id'}
+                                   element={<SinglePage MyComponent = {SingleChar} dataType='character'/>}
                             />
                             <Route path={'*'}
                                    element={<Page404/>}
