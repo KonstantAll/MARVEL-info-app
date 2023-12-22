@@ -17,10 +17,13 @@ const SinglePage = ({MyComponent, dataType}) => {
     const updateData = () => {
         clearError();
         switch (dataType){
-            case 'comic': getComics(id).then(onDataLoaded);
+            case 'comic': {
+                getComics(id).then(onDataLoaded);
+            }
             break;
-            case 'character': {getCharacter(id).then(onDataLoaded);
-                console.log('getCharacter')}
+            case 'character': {
+                getCharacter(id).then(onDataLoaded);
+            }
             break;
         }
     };
@@ -28,7 +31,6 @@ const SinglePage = ({MyComponent, dataType}) => {
     const onDataLoaded = (data) => {
         setData(data);
     }
-
     const errorMessage = error ? <ErrorMessage/>:  null;
     const spinner = loading ? <Spinner/>:  null;
     const content = !(loading || error || !data) ? <MyComponent data ={data}/> : null;
