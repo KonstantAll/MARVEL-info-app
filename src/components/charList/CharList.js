@@ -1,24 +1,34 @@
 import './charList.scss';
-import {useState, useEffect, useRef} from "react";
+import {useState, useEffect, useRef, useMemo} from "react";
 import {TransitionGroup, CSSTransition} from "react-transition-group";
 import useMarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import PropTypes from "prop-types";
 
+const setContent = (process, Component, newItemLoading) => {
+    switch (process){
+        case 'waiting':
+            return <Spinner/>;
+        case 'loading':
+            return newItemLoading ? <Component/> : <Spinner/>;
+        case 'confirmed':
+            return  <Component/>;
+        case 'error':
+            return <ErrorMessage/>;
+        default:
+            throw new Error('Unexpected process state');
+    }
+}
+
 const CharList = (props) => {
 
     const [charList, setCharList] = useState([]);
-    // const [loading, setLoading] = useState(true);
-    // const [error, setError] = useState(false);
     const [newItemLoading, setNewItemLoading] = useState(false);
     const [offset, setOffset] = useState(210);
     const [charEnded, setCharEnded] = useState(false);
 
-
-    const {loading, error, getAllCharacters} = useMarvelService();
-
-
+    const {getAllCharacters, setProcess, process} = useMarvelService();
 
     useEffect(() => {
         onRequest(offset, true);
@@ -27,8 +37,8 @@ const CharList = (props) => {
     const onRequest = (offset, initial) => {
         initial ? setNewItemLoading(false) : setNewItemLoading(true);
         getAllCharacters(offset)
-            .then(onCharListLoaded);
-
+            .then(onCharListLoaded)
+            .then(() => setProcess('confirmed'));
     }
 
     const onCharListLoaded = (newCharList) => {
@@ -41,39 +51,39 @@ const CharList = (props) => {
 
     const itemRefs = useRef([]);
 
-    const focusOnItem = (id) => {
-        itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
-        itemRefs.current[id].classList.add('char__item_selected');
-        itemRefs.current[id].focus();
+    function renderItems(charList) {
+        const focusOnItem = (id) => {
+            itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
+            itemRefs.current[id].classList.add('char__item_selected');
+            itemRefs.current[id].focus();
+        }
+        return charList.map((elem, index) => {
+            return (
+                <Character
+                    itemRefs={itemRefs}
+                    key={elem.id}
+                    char={elem}
+                    onCharSelected={props.onCharSelected}
+                    focusOnItem={focusOnItem}
+                    index={index}
+                />
+            )
+        })
     }
+    const  content = renderItems(charList);
 
-    const elements = charList.map((elem, index) => {
-        return (
-            <Character
-                itemRefs = {itemRefs}
-                key = {elem.id}
-                char = {elem}
-                onCharSelected={props.onCharSelected}
-                focusOnItem ={focusOnItem}
-                index={index}
-            />
-        )
-    })
-
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading && !newItemLoading ? <Spinner/> : null;
-    const content =
-        (<ul className="char__grid">
+    const elements = useMemo(() => setContent(process,
+        () => <ul className="char__grid">
             <TransitionGroup component={null}>
-                {elements}
+                {content}
             </TransitionGroup>
-        </ul>);
+        </ul>,
+        newItemLoading
+    ), [process])
 
     return (
         <div className="char__list">
-            {errorMessage}
-            {spinner}
-            {content}
+            {elements}
             <button
                 className="button button__main button__long"
                 disabled={newItemLoading}
@@ -96,12 +106,6 @@ const Character = (props) => {
                     props.onCharSelected(id);
                     props.focusOnItem(props.index);
                 }}
-                // onKeyPress={(e) => {
-                //     if (e.key === ' ' || e.key === "Enter") {
-                //         props.onCharSelected(id);
-                //         props.focusOnItem(props.index);
-                //     }
-                // }}
                 key={id}>
                 <img src={thumbnail} alt="abyss"
                      style={{

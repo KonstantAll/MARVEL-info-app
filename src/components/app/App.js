@@ -30,10 +30,10 @@ const App = () => {
                                    element={<ComicsPage/>}
                             />
                             <Route path={'/comics/:id'}
-                                   element={<SinglePage MyComponent = {SingleComic} dataType='comic'/>}
+                                   element={<SinglePage Component = {SingleComic} dataType='comic'/>}
                             />
                             <Route path={'/characters/:id'}
-                                   element={<SinglePage MyComponent = {SingleChar} dataType='character'/>}
+                                   element={<SinglePage Component = {SingleChar} dataType='character'/>}
                             />
                             <Route path={'*'}
                                    element={<Page404/>}
