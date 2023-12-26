@@ -14,10 +14,10 @@ const MainPage = () => {
     const onCharSelected = (id) => {
         setChar(id)
     }
-
+    console.log('mainPage')
     return (
         <>
-            <Helmet>
+            <Helmet key = {1}>
                 <meta
                     name="description"
                     content="Marvel information portal"

@@ -57,7 +57,7 @@ const CharList = (props) => {
             itemRefs.current[id].classList.add('char__item_selected');
             itemRefs.current[id].focus();
         }
-        return charList.map((elem, index) => {
+        const content = charList.map((elem, index) => {
             return (
                 <Character
                     itemRefs={itemRefs}
@@ -69,17 +69,18 @@ const CharList = (props) => {
                 />
             )
         })
+        return (
+            <ul className="char__grid">
+                <TransitionGroup component={null}>
+                    {content}
+                </TransitionGroup>
+            </ul>
+        )
     }
-    const  content = renderItems(charList);
+    // const  content = renderItems(charList);
 
-    const elements = useMemo(() => setContent(process,
-        () => <ul className="char__grid">
-            <TransitionGroup component={null}>
-                {content}
-            </TransitionGroup>
-        </ul>,
-        newItemLoading
-    ), [process])
+    const elements = useMemo(() => setContent(process, () => renderItems(charList),
+        newItemLoading), [process])
 
     return (
         <div className="char__list">
